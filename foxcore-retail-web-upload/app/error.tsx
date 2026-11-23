@@ -1,0 +1,2 @@
+'use client';
+export default function ErrorPage({error,reset}:{error:Error;reset:()=>void}){return <main className="min-h-screen grid place-items-center p-6"><div className="card p-8 max-w-lg text-center"><h1 className="text-2xl font-bold">系统暂时无法完成操作</h1><p className="text-red-700 bg-red-50 rounded p-4 mt-5">{error.message||'数据库连接或服务发生错误'}</p><button onClick={reset} className="btn btn-primary mt-6">重试</button></div></main>}

@@ -1,0 +1,2 @@
+import { NextResponse } from 'next/server'; import { createAuthClient } from '@/lib/supabase/server';
+export async function POST(req:Request){const f=await req.formData();const supabase=await createAuthClient();const {error}=await supabase.auth.signInWithPassword({email:String(f.get('email')),password:String(f.get('password'))});return NextResponse.redirect(new URL(error?'/login?error=1':'/dashboard',req.url),303)}

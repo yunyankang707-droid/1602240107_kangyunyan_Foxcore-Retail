@@ -1,0 +1,4 @@
+'use server';
+import { requireRole } from '@/lib/auth'; import { createAdminClient } from '@/lib/supabase/server'; import { z } from 'zod';
+const Schema=z.object({assignmentId:z.coerce.number().int().positive(),lines:z.array(z.object({product_id:z.number().int().positive(),quantity:z.number().int().positive(),unit_price:z.number().nonnegative()})).min(1)});
+export async function saveSale(input:unknown){try{const s=await requireRole(['sales_consultant']);const p=Schema.parse(input);const db=createAdminClient();const {data:a,error:ae}=await db.from('shift_assignment').select('id,staff_id').eq('id',p.assignmentId).eq('staff_id',s.staff.id).single();if(ae||!a)return {ok:false,error:'您无权使用该班次分配'};const {data,error}=await db.rpc('register_sale',{p_assignment_id:p.assignmentId,p_lines:p.lines});if(error)return {ok:false,error:error.message};return {ok:true,id:data};}catch(e){return {ok:false,error:e instanceof Error?e.message:'保存失败'}}}
